@@ -36,3 +36,9 @@ export type Result<T = null> = {
 export type tokenType = {
   token: string;
 }
+
+export type ApiInfoType = [{
+  IP: string, 
+  URL: string, 
+  date: Date
+}]

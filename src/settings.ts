@@ -17,6 +17,7 @@ export const SETTINGS = {
     AUTH: "/auth",
     USERS: "/users",
     COMMENTS: "/comments",
+    SECURITY: "/security"
   },
   ADMIN: process.env.ADMIN || "",
   MONGO_URL: process.env.MONGO_URL || "mongodb://0.0.0.0:27017",
@@ -24,7 +25,9 @@ export const SETTINGS = {
   POST_COLLECTION_NAME: process.env.POST_COLLECTION_NAME || "",
   USER_COLLECTION_NAME: process.env.USER_COLLECTION_NAME || "",
   COMMENT_COLLECTION_NAME: process.env.COMMENT_COLLECTION_NAME || "",
-  TOKENS_COLLECTION_NAME: process.env.TOKENS_COLLECTION_NAME || "",
+  // TOKENS_COLLECTION_NAME: process.env.TOKENS_COLLECTION_NAME || "",
+  API_COLLECTION_NAME: process.env.API_COLLECTION_NAME || "",
+  SECURITY_COLLECTION_NAME: process.env.SECURITY_COLLECTION_NAME || "",
   DB_NAME: process.env.DB_NAME || "",
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || "",
   PASSWORD_BY_EMAIL: process.env.PASSWORD_BY_EMAIL || ""

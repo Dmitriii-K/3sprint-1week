@@ -66,12 +66,12 @@ export const authService = {
         // console.log(result);
         return true;
     },
-    async authUserLogout(token: string) {
-        const invalidToken = await AuthRepository.insertTokenFromDB(token);
-        if(invalidToken) {
-            return true
-        } else {
-            return false
-        };
-    }
+    // async authUserLogout(token: string) {
+    //     const invalidToken = await AuthRepository.insertTokenFromDB(token);
+    //     if(invalidToken) {
+    //         return true
+    //     } else {
+    //         return false
+    //     };
+    // }
 };

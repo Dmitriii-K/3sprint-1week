@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { tokenCollection, userCollection } from "../db/mongo-db";
+import { /*tokenCollection,*/ userCollection } from "../db/mongo-db";
 import { UserDBModel } from "../input-output-types/users-type";
 
 export class AuthRepository {
@@ -27,11 +27,11 @@ export class AuthRepository {
         const result = await userCollection.updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}})
         return result.modifiedCount === 1;
     }
-    static async findRefreshTokenFromDB (token: string) {
-        return tokenCollection.findOne({token: token});
-    }
-    static async insertTokenFromDB (token: string) {
-        const saveResult = await tokenCollection.insertOne({token});
-        return saveResult.insertedId.toString();
-    }
+    // static async findRefreshTokenFromDB (token: string) {
+    //     return tokenCollection.findOne({token: token});
+    // }
+    // static async insertTokenFromDB (token: string) {
+    //     const saveResult = await tokenCollection.insertOne({token});
+    //     return saveResult.insertedId.toString();
+    // }
 }

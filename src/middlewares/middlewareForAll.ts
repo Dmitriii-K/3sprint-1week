@@ -369,3 +369,15 @@ export const commentsPagination = (query: {
       : "desc",
   };
 };
+
+export const countDocumentApi = (req: Request, res: Response, next: NextFunction) => {
+  const tenSecondsAgo = new Date(Date.now() - 10000);
+  const { IP, URL } = req.query;
+
+  const filtrDocument = {
+    IP: IP,
+    URL: URL,
+    date: { $gte: tenSecondsAgo }
+  }
+  next();
+};
