@@ -1,8 +1,11 @@
+import { securityCollection } from "../db/mongo-db";
 
 
 
 export class GetAllDevices {
-    static async getDevices () {
-        
+    static async findDevices () {
+        const devices = await securityCollection.find([{}]);
+        if(devices) return true;
+            return null;
     }
 }

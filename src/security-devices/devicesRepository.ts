@@ -12,9 +12,14 @@ export class DeviceRepository {
         }
     }
     static async deleteDevices () {
-
+        const deleteAlldevices = await securityCollection.deleteMany();
+        if(deleteAlldevices.deletedCount >= 1) {
+            return true
+        } else {
+            return false
+        }
     }
-    static async findUserByDeviceId () {
-        
+    static async findUserByDeviceId (deviceId: string) {
+        const user = await 
     }
 }

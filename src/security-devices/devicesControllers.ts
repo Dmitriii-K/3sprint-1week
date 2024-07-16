@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { DeviceService } from "./devicesService";
+import { GetAllDevices } from "./devicesQueryRepository";
+import { DeviceViewModel } from "../input-output-types/device-type";
 
 
 export class DevicesControllers {
@@ -17,12 +19,12 @@ export class DevicesControllers {
 
     static deleteDeviceById = async (req: Request, res: Response) => {
         try {
-            const findDevice = await DeviceService.findUserByDeviceId();
+            const findDevice = await DeviceService.findUserByDeviceId(req.cookies.deviceId);
             if (!findDevice) {
-                res.sendStatus(404); // null
+                res.sendStatus(404); 
             } else {
-                if () {
-                  res.sendStatus(403); // false
+                if (req.cookies.deviceId.toString() !== findDevice.) {
+                res.sendStatus(403); 
                 return; 
                 }}
 
@@ -38,9 +40,12 @@ export class DevicesControllers {
         }
     };
 
-    static getAllDevices = async (req: Request, res: Response) => {
+    static getAllDevices = async (req: Request, res: Response<DeviceViewModel>) => {
         try {
-            
+            const devices = await GetAllDevices.findDevices();
+            if(devices) {
+                res.sendStatus(200)
+            }
         } catch (error) {
             console.log(error);
             res.sendStatus(505);

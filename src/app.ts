@@ -12,6 +12,7 @@ import { devicesRouters } from "./security-devices/routers";
 export const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.set('trust proxy', true);
 
 app.use(SETTINGS.PATH.BLOGS, blogRouter);
 app.use(SETTINGS.PATH.POSTS, postRouter);
