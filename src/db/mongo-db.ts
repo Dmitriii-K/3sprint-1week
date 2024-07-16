@@ -6,6 +6,7 @@ import { UserDBModel } from "../input-output-types/users-type";
 import { Collection, Db, MongoClient } from "mongodb";
 import { ApiInfoType/*, tokenType */} from "../input-output-types/eny-type";
 import { DeviceViewModel } from "../input-output-types/device-type";
+import { SessionsType } from "../input-output-types/sessions-types";
 
 // получение доступа к бд
 let client: MongoClient = new MongoClient(SETTINGS.MONGO_URL);
@@ -30,9 +31,13 @@ export let commentCollection: Collection<CommentDBType> = db.collection<CommentD
 export let apiCollection: Collection<ApiInfoType> = db.collection<ApiInfoType>(
   SETTINGS.API_COLLECTION_NAME
 );
-export let securityCollection: Collection<DeviceViewModel> = db.collection<DeviceViewModel>(
-  SETTINGS.SECURITY_COLLECTION_NAME
-)
+export let devicesCollection: Collection<DeviceViewModel> = db.collection<DeviceViewModel>(
+  SETTINGS.DEVICES_COLLECTION_NAME
+);
+export let sessionsCollection: Collection<SessionsType> = db.collection<SessionsType>(
+  SETTINGS.SESSIONS_COLLECTION_NAME
+);
+
 
 // проверка подключения к бд
 export const connectDB = async () => {
@@ -46,7 +51,8 @@ export const connectDB = async () => {
     commentCollection = db.collection(SETTINGS.COMMENT_COLLECTION_NAME);
     // tokenCollection = db.collection(SETTINGS.TOKENS_COLLECTION_NAME);
     apiCollection = db.collection(SETTINGS.API_COLLECTION_NAME);
-    securityCollection = db.collection(SETTINGS.SECURITY_COLLECTION_NAME);
+    devicesCollection = db.collection(SETTINGS.DEVICES_COLLECTION_NAME);
+    sessionsCollection = db.collection(SETTINGS.SESSIONS_COLLECTION_NAME);
 
     await client.connect();
     console.log("connected to db");

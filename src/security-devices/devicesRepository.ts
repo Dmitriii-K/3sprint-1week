@@ -1,10 +1,10 @@
-import { securityCollection } from "../db/mongo-db";
+import { devicesCollection} from "../db/mongo-db";
 
 
 
 export class DeviceRepository {
     static async deleteDeviceById (deviceId: string) {
-        const result = await securityCollection.deleteOne({deviceId: deviceId});
+        const result = await devicesCollection.deleteOne({deviceId: deviceId});
         if(result.deletedCount === 1) {
             return true
         } else {
@@ -12,7 +12,7 @@ export class DeviceRepository {
         }
     }
     static async deleteDevices () {
-        const deleteAlldevices = await securityCollection.deleteMany();
+        const deleteAlldevices = await devicesCollection.deleteMany();
         if(deleteAlldevices.deletedCount >= 1) {
             return true
         } else {

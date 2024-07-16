@@ -38,7 +38,7 @@ export type tokenType = {
 }
 
 export type ApiInfoType = [{
-  IP: string, 
-  URL: string, 
+  ip: string;
+  URL: string; 
   date: Date
 }]

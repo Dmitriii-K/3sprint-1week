@@ -372,10 +372,10 @@ export const commentsPagination = (query: {
 
 export const countDocumentApi = (req: Request, res: Response, next: NextFunction) => {
   const tenSecondsAgo = new Date(Date.now() - 10000);
-  const { IP, URL } = req.query;
+  const { ip, URL } = req.query;
 
   const filtrDocument = {
-    IP: IP,
+    ip: ip,
     URL: URL,
     date: { $gte: tenSecondsAgo }
   }
