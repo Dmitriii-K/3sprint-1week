@@ -372,12 +372,15 @@ export const commentsPagination = (query: {
 
 export const countDocumentApi = (req: Request, res: Response, next: NextFunction) => {
   const tenSecondsAgo = new Date(Date.now() - 10000);
-  const { ip, URL } = req.query;
+  const { ip, url } = req; // откуда берем ?
 
   const filtrDocument = {
     ip: ip,
-    URL: URL,
+    URL: url,
     date: { $gte: tenSecondsAgo }
   }
+  // 1-выполняем запрос в БД
+  // 2- делаем подсчет попыток
+  // 3- проверяем на 429 ошибку
   next();
 };

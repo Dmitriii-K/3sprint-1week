@@ -23,7 +23,7 @@ export class DevicesControllers {
             if (!findDevice) {
                 res.sendStatus(404); 
             } else {
-                if (req.cookies.deviceId.toString() !== findDevice.) {
+                if (req.cookies.user._id.toString() !== findDevice.user_id) {
                 res.sendStatus(403); 
                 return; 
                 }}

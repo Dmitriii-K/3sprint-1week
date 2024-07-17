@@ -1,10 +1,10 @@
-import { devicesCollection} from "../db/mongo-db";
+import {sessionsCollection} from "../db/mongo-db";
 
 
 
 export class DeviceRepository {
     static async deleteDeviceById (deviceId: string) {
-        const result = await devicesCollection.deleteOne({deviceId: deviceId});
+        const result = await sessionsCollection.deleteOne({device_id: deviceId});
         if(result.deletedCount === 1) {
             return true
         } else {
@@ -12,7 +12,7 @@ export class DeviceRepository {
         }
     }
     static async deleteDevices () {
-        const deleteAlldevices = await devicesCollection.deleteMany();
+        const deleteAlldevices = await sessionsCollection.deleteMany();
         if(deleteAlldevices.deletedCount >= 1) {
             return true
         } else {
@@ -20,6 +20,11 @@ export class DeviceRepository {
         }
     }
     static async findUserByDeviceId (deviceId: string) {
-        const user = await 
+        const user = await sessionsCollection.findOne({device_id: deviceId});
+        if(user) {
+            return user
+        } else {
+            return false
+        }
     }
 }

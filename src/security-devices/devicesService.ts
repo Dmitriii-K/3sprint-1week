@@ -21,7 +21,7 @@ export class DeviceService {
     static async findUserByDeviceId (deviceId: string) {
         const result = await DeviceRepository.findUserByDeviceId(deviceId);
         if(result) {
-            return true
+            return result
                 } else {
             return false
             }

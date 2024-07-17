@@ -31,9 +31,9 @@ export let commentCollection: Collection<CommentDBType> = db.collection<CommentD
 export let apiCollection: Collection<ApiInfoType> = db.collection<ApiInfoType>(
   SETTINGS.API_COLLECTION_NAME
 );
-export let devicesCollection: Collection<DeviceViewModel> = db.collection<DeviceViewModel>(
-  SETTINGS.DEVICES_COLLECTION_NAME
-);
+// export let devicesCollection: Collection<DeviceViewModel> = db.collection<DeviceViewModel>(
+//   SETTINGS.DEVICES_COLLECTION_NAME
+// );
 export let sessionsCollection: Collection<SessionsType> = db.collection<SessionsType>(
   SETTINGS.SESSIONS_COLLECTION_NAME
 );
@@ -51,7 +51,7 @@ export const connectDB = async () => {
     commentCollection = db.collection(SETTINGS.COMMENT_COLLECTION_NAME);
     // tokenCollection = db.collection(SETTINGS.TOKENS_COLLECTION_NAME);
     apiCollection = db.collection(SETTINGS.API_COLLECTION_NAME);
-    devicesCollection = db.collection(SETTINGS.DEVICES_COLLECTION_NAME);
+    // devicesCollection = db.collection(SETTINGS.DEVICES_COLLECTION_NAME);
     sessionsCollection = db.collection(SETTINGS.SESSIONS_COLLECTION_NAME);
 
     await client.connect();

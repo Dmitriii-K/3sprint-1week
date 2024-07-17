@@ -1,10 +1,10 @@
-import { devicesCollection} from "../db/mongo-db";
+import {sessionsCollection} from "../db/mongo-db";
 
 
 
 export class GetAllDevices {
     static async findDevices () {
-        const devices = await devicesCollection.find([{}]);
+        const devices = await sessionsCollection.find([{}]);
         if(devices) return true;
             return null;
     }

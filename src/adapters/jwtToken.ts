@@ -2,11 +2,13 @@ import  jwt from 'jsonwebtoken';
 import { SETTINGS } from '../settings';
 import { UserDBModel } from '../input-output-types/users-type';
 import {  WithId } from 'mongodb';
+import { randomUUID } from 'crypto';
 
 export type AccessPayloadType  = {
   userId: string;
   email: string,
-    login: string,
+  login: string,
+  device_id: string
 }
 
 export const jwtService = {
@@ -15,6 +17,7 @@ generateToken (user: WithId<UserDBModel>) {
     userId: user._id!.toString(),
     email: user.email,
     login: user.login,
+    device_id: randomUUID() // только для refresh ?
   };
   const optionsAccessToken = {
     expiresIn: '10s' 
