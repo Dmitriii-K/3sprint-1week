@@ -2,8 +2,8 @@ import {sessionsCollection} from "../db/mongo-db";
 
 
 
-export class DeviceRepository {
-    static async deleteDeviceById (deviceId: string) {
+export class SessionsRepository {
+    static async deleteSessionById (deviceId: string) {
         const result = await sessionsCollection.deleteOne({device_id: deviceId});
         if(result.deletedCount === 1) {
             return true
@@ -11,8 +11,9 @@ export class DeviceRepository {
             return false
         }
     }
-    static async deleteDevices () {
-        const deleteAlldevices = await sessionsCollection.deleteMany();
+    static async deleteSessions (data: string) {
+        const {userId, device_id} = data;
+        const deleteAlldevices = await sessionsCollection.deleteMany({user_id: userId, device_id: {$ne: device_id}});
         if(deleteAlldevices.deletedCount >= 1) {
             return true
         } else {

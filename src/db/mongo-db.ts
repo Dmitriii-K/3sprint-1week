@@ -5,7 +5,7 @@ import { BlogDbType } from "../input-output-types/blogs-type";
 import { UserDBModel } from "../input-output-types/users-type";
 import { Collection, Db, MongoClient } from "mongodb";
 import { ApiInfoType/*, tokenType */} from "../input-output-types/eny-type";
-import { DeviceViewModel } from "../input-output-types/device-type";
+// import { DeviceViewModel } from "../input-output-types/device-type";
 import { SessionsType } from "../input-output-types/sessions-types";
 
 // получение доступа к бд

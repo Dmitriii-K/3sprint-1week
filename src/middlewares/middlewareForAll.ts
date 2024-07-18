@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
 import { SETTINGS } from "../settings";
-import { blogCollection, userCollection } from "../db/mongo-db";
+import { apiCollection, blogCollection, userCollection } from "../db/mongo-db";
 import { ObjectId, WithId } from "mongodb";
 import { SortDirection } from "../input-output-types/eny-type";
 import { jwtService } from "../adapters/jwtToken";
@@ -370,17 +370,21 @@ export const commentsPagination = (query: {
   };
 };
 
-export const countDocumentApi = (req: Request, res: Response, next: NextFunction) => {
+export const countDocumentApi = async (req: Request, res: Response, next: NextFunction) => {
+  const currentDate = new Date();
   const tenSecondsAgo = new Date(Date.now() - 10000);
-  const { ip, url } = req; // откуда берем ?
+  const ip = req.ip; // откуда берем ?
+  const url = req.baseUrl;
 
   const filtrDocument = {
     ip: ip,
     URL: url,
     date: { $gte: tenSecondsAgo }
   }
-  // 1-выполняем запрос в БД
-  // 2- делаем подсчет попыток
-  // 3- проверяем на 429 ошибку
+  await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
+  const requestCount = await apiCollection.countDocuments({filtrDocument});
+  if(requestCount >= 5) {
+    res.sendStatus(429)
+  }
   next();
 };
