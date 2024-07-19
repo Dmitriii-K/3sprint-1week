@@ -8,7 +8,7 @@ export class SessionsControllers {
     static deleteAllSessionsExpextCurrentOne = async (req: Request, res: Response) => {
         try {
             const {userId, device_id} = req.cookies.refreshToken;
-            const result = await SessionsService.deleteAllSessionsExpextCurrentOne({userId, device_id});
+            const result = await SessionsService.deleteAllSessionsExpextCurrentOne(userId, device_id);
             if(result!) {
                 res.sendStatus(204)
             }

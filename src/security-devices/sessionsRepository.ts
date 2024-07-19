@@ -11,8 +11,7 @@ export class SessionsRepository {
             return false
         }
     }
-    static async deleteSessions (data: string) {
-        const {userId, device_id} = data;
+    static async deleteSessions (userId: string, device_id: string) {
         const deleteAlldevices = await sessionsCollection.deleteMany({user_id: userId, device_id: {$ne: device_id}});
         if(deleteAlldevices.deletedCount >= 1) {
             return true

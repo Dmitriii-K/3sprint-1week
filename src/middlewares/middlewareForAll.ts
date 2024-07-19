@@ -373,18 +373,23 @@ export const commentsPagination = (query: {
 export const countDocumentApi = async (req: Request, res: Response, next: NextFunction) => {
   const currentDate = new Date();
   const tenSecondsAgo = new Date(Date.now() - 10000);
-  const ip = req.ip; // откуда берем ?
-  const url = req.baseUrl;
+  const ip = req.ip;
+  const url = req.baseUrl || req.originalUrl;
 
-  const filtrDocument = {
+  const filterDocument = {
     ip: ip,
     URL: url,
     date: { $gte: tenSecondsAgo }
   }
-  await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
-  const requestCount = await apiCollection.countDocuments({filtrDocument});
+  await apiCollection.updateOne(
+    { ip: ip, url: url },
+    { $push: { requests: { date: currentDate } } },
+    { upsert: true }
+  );
+  const requestCount = await apiCollection.countDocuments(filterDocument);
   if(requestCount >= 5) {
     res.sendStatus(429)
+  } else {
+    next();
   }
-  next();
 };
