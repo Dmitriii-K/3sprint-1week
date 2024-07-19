@@ -4,7 +4,7 @@ import { UserDBModel } from '../input-output-types/users-type';
 import {  WithId } from 'mongodb';
 import { randomUUID } from 'crypto';
 
-export type AccessPayloadType  = {
+export type PayloadType  = {
   userId: string;
   email: string,
   login: string,
@@ -15,7 +15,7 @@ export type AccessPayloadType  = {
 
 export const jwtService = {
 generateToken (user: WithId<UserDBModel>) {
-  const payload: AccessPayloadType = {
+  const payload: PayloadType = {
     userId: user._id!.toString(),
     email: user.email,
     login: user.login,
@@ -32,9 +32,9 @@ generateToken (user: WithId<UserDBModel>) {
   const refreshToken:string = jwt.sign(payload, secretKey, optionsRefreshToken);
   return {accessToken, refreshToken};
 },
-getUserIdByToken (token:string) : AccessPayloadType | null {
+getUserIdByToken (token:string) : PayloadType | null {
     try {
-    return jwt.verify(token, SETTINGS.JWT_SECRET_KEY) as AccessPayloadType;
+    return jwt.verify(token, SETTINGS.JWT_SECRET_KEY) as PayloadType;
     } catch (error) {
         return null;
       }

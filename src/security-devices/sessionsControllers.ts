@@ -47,7 +47,7 @@ export class SessionsControllers {
         try {
             const sessions = await GetAllSessions.findSessions(req.user._id);
             if(sessions) {
-                res.sendStatus(200)
+                res.status(200).json(sessions) // необходимо реализовать мапинг
             }
         } catch (error) {
             console.log(error);

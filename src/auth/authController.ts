@@ -38,10 +38,11 @@ export class AuthController {
   static authRefreshToken = async (req: Request, res: Response) => {
     try {
       const device = await AuthRepository.findSessionFromDeviceId(req.deviceId);
-      if(device) {
+      if(!device) {
         res.sendStatus(401);
         return
       }
+      //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
       const result = await authService.updateRefreshToken(req.user, req.deviceId);
 
       const {accessToken, refreshToken} = result!;
@@ -98,12 +99,12 @@ export class AuthController {
 
   static authLogout = async (req: Request, res: Response) => {
     try {
-      const device = await AuthRepository.findSessionFromDeviceId(req.deviceId) // поиск по ? нужно удалить сессию по deviceId
-      if(device) {
+      const device = await AuthRepository.findSessionFromDeviceId(req.deviceId)
+      if(!device) {
         res.sendStatus(401)
         return
       }
-      const result = await authService.authLogoutAndDeleteSession(req.deviceId);
+      const result = await authService.authLogoutAndDeleteSession(req.deviceId); // удаляю действующую сессию ?
       if(result) {
         res.clearCookie('refreshToken');
         res.sendStatus(204)
