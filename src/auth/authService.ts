@@ -6,6 +6,7 @@ import { sendMailService } from "../adapters/sendEmail";
 import { AuthRepository } from "./authRepository";
 import { WithId } from "mongodb";
 import { jwtService } from "../adapters/jwtToken";
+import { SessionsType } from "../input-output-types/sessions-types";
 
 export const authService = {
     async checkCredentials(loginOrEmail: string) {
@@ -16,9 +17,13 @@ export const authService = {
             return null;
         }
     },
-    async updateRefreshToken(user:WithId<UserDBModel> ) {
+    async updateRefreshToken(user:WithId<UserDBModel>, deviceId: string) {// как избежать двойного создания deviceId ?
         const newPairTokens = jwtService.generateToken(user);
+        //обновить iat в бд
         const {accessToken, refreshToken} = newPairTokens;
+        const payload = jwtService.getUserIdByToken(refreshToken);
+        const {iat} = payload;
+        await AuthRepository.updateIat(iat);
         if(newPairTokens) {
             return {accessToken, refreshToken}
         } else {
@@ -66,8 +71,26 @@ export const authService = {
         // console.log(result);
         return true;
     },
-    async createSession() {
-        
+    async createSession(userId: string, data: string, userAgent: string, ip: string) {
+        const payload = jwtService.getUserIdByToken(data);
+        const {iat, exp, device_id} = payload;
+        const newSession: SessionsType = {
+            user_id: userId,
+            device_id: device_id,
+            iat: iat,
+            exp: exp,
+            device_name: userAgent,
+            ip: ip
+        }
+        await AuthRepository.createSession(newSession);
+    },
+    async authLogoutAndDeleteSession(deviceId: string) {
+        const deletedSession = await AuthRepository.deleteSession(deviceId);
+        if(deletedSession) {
+            return true
+                } else {
+            return false
+            }
     }
     // async authUserLogout(token: string) {
     //     const invalidToken = await AuthRepository.insertTokenFromDB(token);

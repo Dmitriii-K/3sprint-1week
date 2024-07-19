@@ -1,6 +1,5 @@
 import { SessionsRepository } from "./sessionsRepository";
 
-
 export class SessionsService {
     static async deleteAllSessionsExpextCurrentOne (userId: string, device_id: string) {
         const result = await SessionsRepository.deleteSessions(userId, device_id);

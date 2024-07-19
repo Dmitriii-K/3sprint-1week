@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
-import { /*tokenCollection,*/ userCollection } from "../db/mongo-db";
+import { /*tokenCollection,*/ sessionsCollection, userCollection } from "../db/mongo-db";
 import { UserDBModel } from "../input-output-types/users-type";
+import { SessionsType } from "../input-output-types/sessions-types";
 
 export class AuthRepository {
     static async updateCode(userId: string, newCode: string) {
@@ -27,8 +28,23 @@ export class AuthRepository {
         const result = await userCollection.updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}})
         return result.modifiedCount === 1;
     }
-    static async createSession () {
-        
+    static async createSession (session: SessionsType) {
+        const saveResult = await sessionsCollection.insertOne(session);
+        return saveResult.insertedId.toString();
+    }
+    static async findSessionFromDeviceId (deviceId: string) {
+        return sessionsCollection.findOne({device_id: deviceId})
+    }
+    static async updateIat (iat: Date) {
+        return sessionsCollection.updateOne({iat: iat})
+    }
+    static async deleteSession (deviceId: string) {
+        const result = await sessionsCollection.deleteOne({device_id: deviceId});
+        if(result.deletedCount === 1) {
+            return true
+        } else {
+            return false
+        } 
     }
     // static async findRefreshTokenFromDB (token: string) {
     //     return tokenCollection.findOne({token: token});

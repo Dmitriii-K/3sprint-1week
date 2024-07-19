@@ -21,7 +21,7 @@ export class AuthController {
         const isCorrect = await bcryptService.comparePasswords(req.body.password, authUser?.password);
         if(isCorrect) {
           const{accessToken, refreshToken} = jwtService.generateToken(authUser);
-          // создать сессию
+          await authService.createSession(req.user._id, refreshToken, req.headers["user-agent"]!,  req.ip!); // как убрать ! 
           res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
           .status(200).json({accessToken});
           return;
@@ -37,15 +37,13 @@ export class AuthController {
 
   static authRefreshToken = async (req: Request, res: Response) => {
     try {
-      const token = await AuthRepository.findRefreshTokenFromDB(req.cookies.refreshToken);
-      if(token) {
+      const device = await AuthRepository.findSessionFromDeviceId(req.deviceId);
+      if(device) {
         res.sendStatus(401);
         return
       }
-      if(!token) {
-        AuthRepository.insertTokenFromDB(req.cookies.refreshToken)
-      };
-      const result = await authService.updateRefreshToken(req.user);
+      const result = await authService.updateRefreshToken(req.user, req.deviceId);
+
       const {accessToken, refreshToken} = result!;
         res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
         .status(200).json({accessToken});
@@ -100,12 +98,12 @@ export class AuthController {
 
   static authLogout = async (req: Request, res: Response) => {
     try {
-      const token = await AuthRepository.findRefreshTokenFromDB(req.cookies.refreshToken)
-      if(token) {
+      const device = await AuthRepository.findSessionFromDeviceId(req.deviceId) // поиск по ? нужно удалить сессию по deviceId
+      if(device) {
         res.sendStatus(401)
         return
       }
-      const result = await authService.authUserLogout(req.cookies.refreshToken);
+      const result = await authService.authLogoutAndDeleteSession(req.deviceId);
       if(result) {
         res.clearCookie('refreshToken');
         res.sendStatus(204)

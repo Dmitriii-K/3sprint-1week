@@ -8,7 +8,9 @@ export type AccessPayloadType  = {
   userId: string;
   email: string,
   login: string,
-  device_id: string
+  device_id: string,
+  iat?: Date,
+  exp?: Date
 }
 
 export const jwtService = {

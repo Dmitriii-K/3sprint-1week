@@ -1,7 +1,5 @@
 import {sessionsCollection} from "../db/mongo-db";
 
-
-
 export class SessionsRepository {
     static async deleteSessionById (deviceId: string) {
         const result = await sessionsCollection.deleteOne({device_id: deviceId});
