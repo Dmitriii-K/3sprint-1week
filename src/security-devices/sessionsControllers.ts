@@ -43,7 +43,7 @@ export class SessionsControllers {
 
     static getAllSessions = async (req: Request, res: Response<DeviceViewModel>) => {
         try {
-            const sessions = await GetAllSessions.findSessions(req.user.user_id);
+            const sessions = await GetAllSessions.findSessions(req.user._id);
             if(sessions) {
                 res.sendStatus(200)
             }
