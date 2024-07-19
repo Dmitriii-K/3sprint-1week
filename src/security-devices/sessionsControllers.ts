@@ -7,7 +7,9 @@ import { DeviceViewModel } from "../input-output-types/device-type";
 export class SessionsControllers {
     static deleteAllSessionsExpextCurrentOne = async (req: Request, res: Response) => {
         try {
-            const {userId, device_id} = req.cookies.refreshToken;
+            const userId = req.user;
+            const device_id = req.deviceId;
+
             const result = await SessionsService.deleteAllSessionsExpextCurrentOne(userId, device_id);
             if(result!) {
                 res.sendStatus(204)
@@ -20,7 +22,7 @@ export class SessionsControllers {
 
     static deleteSessionsById = async (req: Request, res: Response) => {
         try {
-            const findSession = await SessionsService.findUserByDeviceId(req.cookies.refreshToken.deviceId);
+            const findSession = await SessionsService.findUserByDeviceId(req.deviceId);
             if (!findSession) {
                 res.sendStatus(404); 
             } else {
@@ -29,7 +31,7 @@ export class SessionsControllers {
                 return; 
                 }}
 
-            const deleteDevice = await SessionsService.deleteSessionById(req.cookies.refreshToken.deviceId);
+            const deleteDevice = await SessionsService.deleteSessionById(req.deviceId);
             if(deleteDevice!) {
                 res.sendStatus(204)
             } else {

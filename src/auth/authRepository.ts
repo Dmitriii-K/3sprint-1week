@@ -27,6 +27,9 @@ export class AuthRepository {
         const result = await userCollection.updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}})
         return result.modifiedCount === 1;
     }
+    static async createSession () {
+        
+    }
     // static async findRefreshTokenFromDB (token: string) {
     //     return tokenCollection.findOne({token: token});
     // }

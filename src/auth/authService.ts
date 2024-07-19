@@ -66,6 +66,9 @@ export const authService = {
         // console.log(result);
         return true;
     },
+    async createSession() {
+        
+    }
     // async authUserLogout(token: string) {
     //     const invalidToken = await AuthRepository.insertTokenFromDB(token);
     //     if(invalidToken) {

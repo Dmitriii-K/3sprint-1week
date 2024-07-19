@@ -7,16 +7,13 @@ declare global {
         }
     }
 }
-
-declare global {
-    namespace Express {
-        export interface Locals {
-            user: UserDBModel 
-        }
-    }
-}
-
-
+// declare global {
+//     namespace Express {
+//         export interface Locals {
+//             user: UserDBModel 
+//         }
+//     }
+// }
 // import { Request } from "express"
 // declare global {
 //     namespace Express {
@@ -25,3 +22,11 @@ declare global {
 //         }
 //     }
 // }
+
+declare global {
+    namespace Express {
+        export interface Request {
+            deviceId: string 
+        }
+    }
+}

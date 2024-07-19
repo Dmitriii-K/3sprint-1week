@@ -21,6 +21,7 @@ export class AuthController {
         const isCorrect = await bcryptService.comparePasswords(req.body.password, authUser?.password);
         if(isCorrect) {
           const{accessToken, refreshToken} = jwtService.generateToken(authUser);
+          // создать сессию
           res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
           .status(200).json({accessToken});
           return;

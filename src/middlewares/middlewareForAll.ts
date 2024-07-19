@@ -321,6 +321,7 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
   if(user) {
     req.user = user;
+    req.deviceId = payload.device_id;
     next();
     return
   } else {
@@ -374,18 +375,14 @@ export const countDocumentApi = async (req: Request, res: Response, next: NextFu
   const currentDate = new Date();
   const tenSecondsAgo = new Date(Date.now() - 10000);
   const ip = req.ip;
-  const url = req.baseUrl || req.originalUrl;
+  const url = req.originalUrl;
 
   const filterDocument = {
     ip: ip,
     URL: url,
     date: { $gte: tenSecondsAgo }
   }
-  await apiCollection.updateOne(
-    { ip: ip, url: url },
-    { $push: { requests: { date: currentDate } } },
-    { upsert: true }
-  );
+  await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
   const requestCount = await apiCollection.countDocuments(filterDocument);
   if(requestCount >= 5) {
     res.sendStatus(429)
