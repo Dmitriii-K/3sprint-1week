@@ -3,6 +3,6 @@ export type SessionsType = {
     device_id: string;
     iat: Date;
     exp: Date;
-    device_name?: string;
+    device_name: string;
     ip: string
 }

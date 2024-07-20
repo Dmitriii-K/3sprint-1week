@@ -35,8 +35,8 @@ export class AuthRepository {
     static async findSessionFromDeviceId (deviceId: string) {
         return sessionsCollection.findOne({device_id: deviceId})
     }
-    static async updateIat (iat: Date) {
-        return sessionsCollection.updateOne({iat: iat})
+    static async updateIat (iat: Date,deviceId:string) {
+        return sessionsCollection.updateOne({device_id:deviceId}, {iat: iat})
     }
     static async deleteSession (deviceId: string) {
         const result = await sessionsCollection.deleteOne({device_id: deviceId});

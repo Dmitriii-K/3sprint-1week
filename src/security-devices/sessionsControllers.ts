@@ -43,11 +43,11 @@ export class SessionsControllers {
         }
     };
 
-    static getAllSessions = async (req: Request, res: Response<DeviceViewModel>) => {
+    static getAllSessions = async (req: Request, res: Response<DeviceViewModel[]>) => {
         try {
             const sessions = await GetAllSessions.findSessions(req.user._id);
             if(sessions) {
-                res.status(200).json(sessions) // необходимо реализовать мапинг
+                res.status(200).json(sessions)
             }
         } catch (error) {
             console.log(error);

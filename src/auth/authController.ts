@@ -21,7 +21,7 @@ export class AuthController {
         const isCorrect = await bcryptService.comparePasswords(req.body.password, authUser?.password);
         if(isCorrect) {
           const{accessToken, refreshToken} = jwtService.generateToken(authUser);
-          await authService.createSession(req.user._id, refreshToken, req.headers["user-agent"]!,  req.ip!); // как убрать ! 
+          await authService.createSession(req.user._id, refreshToken, req.headers["user-agent"] || "unknown",  req.ip || "unknown");
           res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
           .status(200).json({accessToken});
           return;
@@ -42,7 +42,6 @@ export class AuthController {
         res.sendStatus(401);
         return
       }
-      //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
       const result = await authService.updateRefreshToken(req.user, req.deviceId);
 
       const {accessToken, refreshToken} = result!;
@@ -104,7 +103,7 @@ export class AuthController {
         res.sendStatus(401)
         return
       }
-      const result = await authService.authLogoutAndDeleteSession(req.deviceId); // удаляю действующую сессию ?
+      const result = await authService.authLogoutAndDeleteSession(req.deviceId);
       if(result) {
         res.clearCookie('refreshToken');
         res.sendStatus(204)

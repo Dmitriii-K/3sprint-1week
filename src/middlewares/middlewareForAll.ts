@@ -322,6 +322,9 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   if(user) {
     req.user = user;
     req.deviceId = payload.device_id;
+
+    //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
+
     next();
     return
   } else {

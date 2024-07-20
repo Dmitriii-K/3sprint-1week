@@ -17,13 +17,16 @@ export const authService = {
             return null;
         }
     },
-    async updateRefreshToken(user:WithId<UserDBModel>, deviceId: string) {// как избежать двойного создания deviceId ?
-        const newPairTokens = jwtService.generateToken(user);
-        //обновить iat в бд
+    async updateRefreshToken(user:WithId<UserDBModel>, deviceId: string) {
+        const newPairTokens = jwtService.generateToken(user,deviceId);
+
         const {accessToken, refreshToken} = newPairTokens;
         const payload = jwtService.getUserIdByToken(refreshToken);
+
+        if(!payload) throw new Error('пейлода нет, хотя он должен быть после создания новой пары')
+
         const {iat} = payload;
-        await AuthRepository.updateIat(iat);
+        await AuthRepository.updateIat(iat,deviceId);
         if(newPairTokens) {
             return {accessToken, refreshToken}
         } else {
@@ -73,7 +76,7 @@ export const authService = {
     },
     async createSession(userId: string, token: string, userAgent: string, ip: string) {
         const payload = jwtService.getUserIdByToken(token);
-        const {iat, exp, device_id} = payload;
+        const {iat, exp, device_id} = payload!;
         const newSession: SessionsType = {
             user_id: userId,
             device_id: device_id,

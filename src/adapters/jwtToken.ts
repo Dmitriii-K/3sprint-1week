@@ -9,17 +9,23 @@ export type PayloadType  = {
   email: string,
   login: string,
   device_id: string,
-  iat?: Date,
-  exp?: Date
 }
 
+export type SystemPayload = {
+  iat: Date
+  exp: Date
+}
+
+export type UnionPayload = PayloadType & SystemPayload
+
 export const jwtService = {
-generateToken (user: WithId<UserDBModel>) {
+generateToken (user: WithId<UserDBModel>, deviceId?: string) {
+
   const payload: PayloadType = {
     userId: user._id!.toString(),
     email: user.email,
     login: user.login,
-    device_id: randomUUID() // только для refresh ?
+    device_id:deviceId ?? randomUUID()
   };
   const optionsAccessToken = {
     expiresIn: '10s' 
@@ -32,9 +38,9 @@ generateToken (user: WithId<UserDBModel>) {
   const refreshToken:string = jwt.sign(payload, secretKey, optionsRefreshToken);
   return {accessToken, refreshToken};
 },
-getUserIdByToken (token:string) : PayloadType | null {
+getUserIdByToken (token:string) : UnionPayload | null {
     try {
-    return jwt.verify(token, SETTINGS.JWT_SECRET_KEY) as PayloadType;
+    return jwt.verify(token, SETTINGS.JWT_SECRET_KEY) as unknown as UnionPayload;
     } catch (error) {
         return null;
       }
