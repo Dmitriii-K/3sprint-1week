@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
 import { SETTINGS } from "../settings";
-import { apiCollection, blogCollection, userCollection } from "../db/mongo-db";
+import { apiCollection, blogCollection, sessionsCollection, userCollection } from "../db/mongo-db";
 import { ObjectId, WithId } from "mongodb";
 import { SortDirection } from "../input-output-types/eny-type";
 import { jwtService } from "../adapters/jwtToken";
@@ -324,7 +324,10 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
     req.deviceId = payload.device_id;
 
     //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
-
+    const session = await sessionsCollection.findOne({device_id: req.deviceId})
+    if(session?.iat !== payload.iat) {
+      res.sendStatus(401)
+    }
     next();
     return
   } else {
