@@ -21,7 +21,7 @@ export class AuthController {
         const isCorrect = await bcryptService.comparePasswords(req.body.password, authUser?.password);
         if(isCorrect) {
           const{accessToken, refreshToken} = jwtService.generateToken(authUser);
-          await authService.createSession(req.user._id.toString(), refreshToken, req.headers["user-agent"] || "unknown",  req.ip || "unknown");
+          await authService.createSession(authUser._id.toString(), refreshToken, req.headers["user-agent"] || "unknown",  req.ip || "unknown");
           res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
           .status(200).json({accessToken});
           return;

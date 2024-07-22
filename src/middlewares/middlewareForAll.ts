@@ -317,7 +317,7 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   const token = req.cookies.refreshToken;
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);
-
+  
   const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
   if(user) {
     req.user = user;
