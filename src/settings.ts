@@ -31,6 +31,7 @@ export const SETTINGS = {
   SESSIONS_COLLECTION_NAME: process.env.SESSIONS_COLLECTION_NAME || "",
   DB_NAME: process.env.DB_NAME || "",
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || "",
+  REFRESH_TOKEN: process.env.REFRESH_TOKEN || "",
   PASSWORD_BY_EMAIL: process.env.PASSWORD_BY_EMAIL || ""
 
   // ADMIN: envValidation(process.env.ADMIN) ? process.env.ADMIN : "",
