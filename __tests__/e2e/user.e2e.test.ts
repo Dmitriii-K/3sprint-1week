@@ -15,7 +15,7 @@ describe("/blogs", () => {
     await userCollection.drop();
 });
 const refreshToken1 = "";
-const user = "";
+const user = user1;
     it("should create", async () => {
       // зачищаем базу данных
     await userCollection.drop();

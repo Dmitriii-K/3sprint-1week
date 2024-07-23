@@ -311,6 +311,7 @@ if(!req.headers.authorization) {
 
 export const checkRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
   if(!req.cookies.refreshToken) {
+    // console.log(req.cookies)
     res.sendStatus(401);
     return
   };
