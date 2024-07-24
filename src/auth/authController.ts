@@ -44,7 +44,7 @@ export class AuthController {
       }
       const result = await authService.updateRefreshToken(req.user, req.deviceId);
 
-      const {accessToken, refreshToken} = result!;
+      const {accessToken, refreshToken} = result;
         res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true,})
         .status(200).json({accessToken});
     } catch (error) {

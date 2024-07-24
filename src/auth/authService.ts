@@ -19,19 +19,12 @@ export const authService = {
     },
     async updateRefreshToken(user:WithId<UserDBModel>, deviceId: string) {
         const newPairTokens = jwtService.generateToken(user,deviceId);
-
         const {accessToken, refreshToken} = newPairTokens;
         const payload = jwtService.getUserIdByToken(refreshToken);
-
         if(!payload) throw new Error('пейлода нет, хотя он должен быть после создания новой пары')
-
         const {iat} = payload;
         await AuthRepository.updateIat(iat,deviceId);
-        if(newPairTokens) {
             return {accessToken, refreshToken}
-        } else {
-            return null
-        };
     },
     async registerUser(data:UserInputModel) {
  //проверить существует ли уже юзер с таким логином или почтой и если да - не регистрировать ПРОВЕРКА В MIDDLEWARE

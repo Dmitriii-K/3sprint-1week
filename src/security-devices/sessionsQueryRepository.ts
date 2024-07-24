@@ -17,7 +17,7 @@ export class GetAllSessions {
         return {
             ip: session.ip,
             title: session.device_name,
-            lastActiveDate: session.iat.toString(),
+            lastActiveDate: session.iat,
             deviceId: session.device_id
         }
     }

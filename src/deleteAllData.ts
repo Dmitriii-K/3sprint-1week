@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { Router } from "express";
-import { blogCollection, postCollection, userCollection, commentCollection,/*, tokenCollection, apiCollection */
-apiCollection,
-sessionsCollection} from "./db/mongo-db";
+import { blogCollection, postCollection, userCollection, commentCollection,/*, tokenCollection*/
+apiCollection, sessionsCollection} from "./db/mongo-db";
 
 export const deleteRouter = Router();
 
