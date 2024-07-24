@@ -22,9 +22,10 @@ export const authService = {
         const {accessToken, refreshToken} = newPairTokens;
         const payload = jwtService.getUserIdByToken(refreshToken);
         if(!payload) throw new Error('пейлода нет, хотя он должен быть после создания новой пары')
-        const {iat} = payload;
+        let {iat} = payload;
+        iat = new Date(iat * 1000).toISOString();
         await AuthRepository.updateIat(iat,deviceId);
-            return {accessToken, refreshToken}
+        return {accessToken, refreshToken}
     },
     async registerUser(data:UserInputModel) {
  //проверить существует ли уже юзер с таким логином или почтой и если да - не регистрировать ПРОВЕРКА В MIDDLEWARE
@@ -69,12 +70,12 @@ export const authService = {
     },
     async createSession(userId: string, token: string, userAgent: string, ip: string) {
         const payload = jwtService.getUserIdByToken(token);
-        let {iat, exp, device_id} = payload!;
+        let {iat, exp, deviceId} = payload!;
         iat = new Date(iat * 1000).toISOString();
         exp = new Date(exp * 1000).toISOString();
         const newSession: SessionsType = {
             user_id: userId,
-            device_id: device_id,
+            device_id: deviceId,
             iat: iat,
             exp: exp,
             device_name: userAgent,

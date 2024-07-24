@@ -5,9 +5,8 @@ import { SessionsType } from "../input-output-types/sessions-types";
 
 export class GetAllSessions {
     static async findSessions (userId: string): Promise<DeviceViewModel[] | null> {
-            const currentTime = new Date().toISOString();
+        const currentTime = new Date().toISOString();
         const sessions = await sessionsCollection.find({user_id: userId.toString(), exp: {$gte: currentTime}}).toArray();
-        // const allSessions = sessions.map(GetAllSessions.mapSession)
         if(!sessions) {
             return null;
         }

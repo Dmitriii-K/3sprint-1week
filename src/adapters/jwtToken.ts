@@ -8,7 +8,7 @@ export type PayloadType  = {
   userId: string;
   email: string,
   login: string,
-  device_id: string,
+  deviceId: string,
 }
 
 export type SystemPayload = {
@@ -25,7 +25,7 @@ generateToken (user: WithId<UserDBModel>, deviceId?: string) {
     userId: user._id!.toString(),
     email: user.email,
     login: user.login,
-    device_id:deviceId ?? randomUUID()
+    deviceId:deviceId ?? randomUUID()
   };
   const optionsAccessToken = {
     expiresIn: '10s' 

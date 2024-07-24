@@ -7,12 +7,13 @@ import { DeviceViewModel } from "../input-output-types/device-type";
 export class SessionsControllers {
     static deleteAllSessionsExpextCurrentOne = async (req: Request, res: Response) => {
         try {
-            const userId = req.user;
+            const userId = req.user._id.toString();
             const device_id = req.deviceId;
 
             const result = await SessionsService.deleteAllSessionsExpextCurrentOne(userId, device_id);
             if(result!) {
                 res.sendStatus(204)
+                return
             }
         } catch (error) {
             console.log(error);
@@ -22,20 +23,23 @@ export class SessionsControllers {
 
     static deleteSessionsById = async (req: Request, res: Response) => {
         try {
-            const findSession = await SessionsService.findUserByDeviceId(req.deviceId);
+            const findSession = await SessionsService.findUserByDeviceId(req.params.id);
             if (!findSession) {
                 res.sendStatus(404); 
+                return
             } else {
                 if (req.user._id.toString() !== findSession.user_id) {
                 res.sendStatus(403); 
                 return; 
                 }}
 
-            const deleteDevice = await SessionsService.deleteSessionById(req.deviceId);
+            const deleteDevice = await SessionsService.deleteSessionById(req.params.id);
             if(deleteDevice!) {
                 res.sendStatus(204)
+                return
             } else {
                 res.sendStatus(404)
+                return
             }
         } catch (error) {
             console.log(error);

@@ -322,7 +322,7 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
   if(user) {
     req.user = user;
-    req.deviceId = payload.device_id;
+    req.deviceId = payload.deviceId;
     const dateIat = new Date(payload.iat * 1000).toISOString();
     //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
     const session = await sessionsCollection.findOne({device_id: req.deviceId})
@@ -392,7 +392,7 @@ export const countDocumentApi = async (req: Request, res: Response, next: NextFu
   }
   await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
   const requestCount = await apiCollection.countDocuments(filterDocument);
-  if(requestCount >= 5) {
+  if(requestCount > 5) {
     res.sendStatus(429)
   } else {
     next();
