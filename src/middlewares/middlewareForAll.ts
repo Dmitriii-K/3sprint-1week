@@ -323,11 +323,12 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   if(user) {
     req.user = user;
     req.deviceId = payload.device_id;
-
+    const dateIat = new Date(payload.iat * 1000).toISOString();
     //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
     const session = await sessionsCollection.findOne({device_id: req.deviceId})
-    if(session?.iat !== payload.iat) {
+    if(session?.iat !== dateIat) {
       res.sendStatus(401)
+      return
     }
     next();
     return

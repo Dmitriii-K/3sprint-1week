@@ -76,7 +76,9 @@ export const authService = {
     },
     async createSession(userId: string, token: string, userAgent: string, ip: string) {
         const payload = jwtService.getUserIdByToken(token);
-        const {iat, exp, device_id} = payload!;
+        let {iat, exp, device_id} = payload!;
+        iat = new Date(iat * 1000).toISOString();
+        exp = new Date(exp * 1000).toISOString();
         const newSession: SessionsType = {
             user_id: userId,
             device_id: device_id,

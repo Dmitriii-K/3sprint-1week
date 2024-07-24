@@ -12,8 +12,8 @@ export type PayloadType  = {
 }
 
 export type SystemPayload = {
-  iat: Date
-  exp: Date
+  iat: any
+  exp: any
 }
 
 export type UnionPayload = PayloadType & SystemPayload
