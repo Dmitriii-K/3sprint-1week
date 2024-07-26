@@ -6,6 +6,7 @@ import { ObjectId, WithId } from "mongodb";
 import { SortDirection } from "../input-output-types/eny-type";
 import { jwtService } from "../adapters/jwtToken";
 import { UserDBModel } from "../input-output-types/users-type";
+import { AuthRepository } from "../auth/authRepository";
 
 const urlPattern =
   /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
@@ -392,6 +393,8 @@ export const countDocumentApi = async (req: Request, res: Response, next: NextFu
   }
   await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
   const requestCount = await apiCollection.countDocuments(filterDocument);
+  // const result = AuthRepository.dataRecording(ip, url, currentDate)
+  // const requestCount = AuthRepository.countingNumberRequests(filterDocument)
   if(requestCount > 5) {
     res.sendStatus(429)
   } else {

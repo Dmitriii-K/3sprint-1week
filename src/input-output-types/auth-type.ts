@@ -20,3 +20,9 @@ export type RegistrationConfirmationCodeModel = {
 export type RegistrationEmailResending = {
   email: string;
 };
+
+export type FilterDocument = {
+  ip: string;
+  URL: string;
+  date: Date
+}

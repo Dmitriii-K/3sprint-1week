@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { /*tokenCollection,*/ sessionsCollection, userCollection } from "../db/mongo-db";
+import { /*tokenCollection,*/ apiCollection, sessionsCollection, userCollection } from "../db/mongo-db";
 import { UserDBModel } from "../input-output-types/users-type";
 import { SessionsType } from "../input-output-types/sessions-types";
 
@@ -49,6 +49,13 @@ export class AuthRepository {
             return false
         } 
     }
+    // static async dataRecording (ip: string, url: string, currentDate: Date) {
+    //     const result = await apiCollection.insertOne({ip: ip, URL: url, date: currentDate})
+    //     return result.insertedId.toString()
+    // }
+    // static async countingNumberRequests (filterDocument: ) {
+    //     return apiCollection.countDocuments(filterDocument)
+    // }
     // static async findRefreshTokenFromDB (token: string) {
     //     return tokenCollection.findOne({token: token});
     // }
