@@ -22,6 +22,6 @@ export class UserService {
             isConfirmed: true
         }
         };
-    return UserRepository.createUser(newUser);
+    return UserRepository.insertUser(newUser);
     }
 }

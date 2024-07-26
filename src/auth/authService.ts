@@ -28,7 +28,8 @@ export const authService = {
         return {accessToken, refreshToken}
     },
     async registerUser(data:UserInputModel) {
- //проверить существует ли уже юзер с таким логином или почтой и если да - не регистрировать ПРОВЕРКА В MIDDLEWARE
+        const checkUser = await AuthRepository.checkUserByRegistration(data.login, data.email);
+        if(checkUser !== null) return;
         const password = await bcryptService.createHashPassword(data.password)//создать хэш пароля
         const newUser: UserDBModel = { // сформировать dto юзера
             login: data.login,

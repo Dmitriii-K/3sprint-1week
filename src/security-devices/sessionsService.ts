@@ -1,8 +1,8 @@
 import { SessionsRepository } from "./sessionsRepository";
 
 export class SessionsService {
-    static async deleteAllSessionsExpextCurrentOne (userId: string, device_id: string) {
-        const result = await SessionsRepository.deleteSessions(userId, device_id);
+    static async deleteAllSessionsExceptCurrentOne (userId: string, device_id: string) {
+        const result = await SessionsRepository.deleteAllSessionsExceptCurrentOne(userId, device_id);
         if(result) {
             return true
                 } else {

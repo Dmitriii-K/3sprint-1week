@@ -206,13 +206,13 @@ export const userRegistrationValidation = [
     .matches(loginPattern)
     .withMessage("not login")
     .isLength({ min: 3, max: 10 })
-    .withMessage("Invalid login")
-    .custom(async (value : string) => {
-      const user = await userCollection.findOne({ login: value });
-      if (user) {
-        return Promise.reject("Login is already in use");
-      }
-    }),
+    .withMessage("Invalid login"),
+    // .custom(async (value : string) => {
+    //   const user = await userCollection.findOne({ login: value });
+    //   if (user) {
+    //     return Promise.reject("Login is already in use");
+    //   }
+    // }),
   body("password")
     .isString()
     .withMessage("not string")
@@ -230,12 +230,12 @@ export const userRegistrationValidation = [
     .matches(imailPattern)
     .isEmail()
     .withMessage("Invalid email format")
-    .custom(async (value) => {
-      const user = await userCollection.findOne({ email: value });
-      if (user) {
-        return Promise.reject("Email is already in use");
-      }
-    }),
+    // .custom(async (value) => {
+    //   const user = await userCollection.findOne({ email: value });
+    //   if (user) {
+    //     return Promise.reject("Email is already in use");
+    //   }
+    // }),
 ];
 
 export const inputCheckErrorsMiddleware = (

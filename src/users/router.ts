@@ -1,7 +1,5 @@
 import { Router } from "express";
-import { getUserController } from "./getUserController";
-import { createUserController } from "./createUserController";
-import { deleteUserController } from "./deleteUserController";
+import { UserController } from "./userController";
 import {
   userInputValidation,
   inputCheckErrorsMiddleware,
@@ -10,12 +8,12 @@ import { authMiddleware } from "../middlewares/middlewareForAll";
 
 export const usersRouter = Router();
 
-usersRouter.get("/", authMiddleware, getUserController);
+usersRouter.get("/", authMiddleware, UserController.getUser);
 usersRouter.post(
   "/",
   authMiddleware,
   userInputValidation,
   inputCheckErrorsMiddleware,
-  createUserController
+  UserController.createUser
 );
-usersRouter.delete("/:id", authMiddleware, deleteUserController);
+usersRouter.delete("/:id", authMiddleware, UserController.deleteUser);

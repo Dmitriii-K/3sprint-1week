@@ -4,7 +4,7 @@ import { deleteRouter } from "./deleteAllData";
 import { blogRouter } from "./blogs/blogRouters";
 import { postRouter } from "./posts/postsRouters";
 import { authRouter } from "./auth/authRouter";
-import { usersRouter } from "./users/usersRouter";
+import { usersRouter } from "./users/router";
 import { commentsRouters } from "./comments/routers";
 import cookieParser from "cookie-parser";
 import { devicesRouters } from "./security-devices/routers";

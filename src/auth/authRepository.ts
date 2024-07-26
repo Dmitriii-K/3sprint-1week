@@ -8,6 +8,9 @@ export class AuthRepository {
         const result = await userCollection.updateOne({_id : new ObjectId(userId)}, {$set: {'emailConfirmation.confirmationCode': newCode}})
         return result.modifiedCount === 1;
     }
+    static async checkUserByRegistration (login: string, email: string) {
+        return userCollection.findOne({ $or: [{ login: login }, { email: email }] });
+    }
     static async findUserByLogiOrEmail (loginOrEmail: string) {
         return userCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
     }

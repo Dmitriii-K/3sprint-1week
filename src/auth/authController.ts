@@ -3,6 +3,7 @@ import { LoginInputModel, LoginSuccessViewModel, RegistrationConfirmationCodeMod
 import { OutputErrorsType } from "../input-output-types/output-errors-type";
 import { jwtService } from "../adapters/jwtToken";
 import { UserInputModel } from "../input-output-types/users-type";
+import { MeViewModel } from "../input-output-types/auth-type";
 import { authService } from "./authService";
 import { bcryptService } from "../adapters/bcrypt";
 import { AuthRepository } from "./authRepository";
@@ -112,7 +113,18 @@ export class AuthController {
       console.log(error);
       res.sendStatus(505);
     }
-  }
+  };
+
+  static getUserInform = async (req: Request, res: Response<MeViewModel>) => {
+    try {
+        const {login, email, _id} = req.user
+        const result = {login, email, userId: _id.toString()}
+        res.status(200).json(result!); 
+        return;
+    } catch (error) {
+        console.log(error);
+    }
+  };
 };
 
 

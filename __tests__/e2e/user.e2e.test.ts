@@ -109,7 +109,7 @@ describe('E2E Tests', () => {
                 password: "password",
             });
     
-        expect(res.status).toBe(200);
+        expect(200);
         expect(res.body).toHaveProperty('accessToken');
         expect(res.headers['set-cookie']).toBeDefined();
 

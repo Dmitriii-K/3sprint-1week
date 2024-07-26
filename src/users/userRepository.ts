@@ -3,7 +3,7 @@ import { UserDBModel } from "../input-output-types/users-type";
 import { ObjectId } from "mongodb";
 
 export class UserRepository {
-    static async createUser (user: UserDBModel) {
+    static async insertUser (user: UserDBModel) {
         const saveResult = await userCollection.insertOne(user);
         return saveResult.insertedId.toString();
     }
