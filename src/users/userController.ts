@@ -47,7 +47,7 @@ export class UserController {
     ) => {
         try {
         const users = await UserQueryRepository.findUsers(req.query)
-        res.status(200).json(users!);
+        res.status(200).json(users);
         return;
         } catch (e) {
         console.log(e);

@@ -7,7 +7,7 @@ import { BlgId } from "../input-output-types/eny-type";
 import { TypePostForBlogHalper } from "../input-output-types/blogs-type";
 import { postCollection } from "../db/mongo-db";
 import { WithId } from "mongodb";
-import { postsMap } from "../posts/getPostsController";
+import { PostQueryRepository } from "../posts/postsQueryRepository";
 import { halper } from "../middlewares/middlewareForAll";
 
 export const getPostForBlogController = async (
@@ -33,7 +33,7 @@ export const getPostForBlogController = async (
       page: queryParams.pageNumber,
       pageSize: queryParams.pageSize,
       totalCount,
-      items: items.map(postsMap),
+      items: items.map(PostQueryRepository.mapPost),
     };
     res.status(200).json(newPost);
   } catch (error) {

@@ -1,11 +1,5 @@
 import { Router } from "express";
-import { getPostsController } from "./getPostsController";
-import { createPostController } from "./createPostController";
-import { findPostController } from "./findPostController";
-import { updatePostController } from "./updatePostController";
-import { deletePostController } from "./deletePostController";
-import { createCommentByPostId } from "./createCommentByPostId";
-import { getCommentByPostId } from "./getCommentByPostId";
+import { PostController } from "./postsController";
 import { commentsValidation } from "../middlewares/middlewareForAll";
 import {
   postInputValidation,
@@ -16,22 +10,22 @@ import {
 
 export const postRouter = Router();
 
-postRouter.get("/", getPostsController);
+postRouter.get("/", PostController.getPosts);
 postRouter.post(
   "/",
   authMiddleware,
   postInputValidation,
   inputCheckErrorsMiddleware,
-  createPostController
+  PostController.createPost
 );
-postRouter.get("/:id", findPostController);
+postRouter.get("/:id", PostController.getPostById);
 postRouter.put(
   "/:id",
   authMiddleware,
   postInputValidation,
   inputCheckErrorsMiddleware,
-  updatePostController
+  PostController.updatePost
 );
-postRouter.post("/:id/comments", bearerAuth, commentsValidation, inputCheckErrorsMiddleware, createCommentByPostId);
-postRouter.get("/:id/comments", getCommentByPostId)
-postRouter.delete("/:id", authMiddleware, deletePostController);
+postRouter.post("/:id/comments", bearerAuth, commentsValidation, inputCheckErrorsMiddleware, PostController.createCommentByPostId);
+postRouter.get("/:id/comments", PostController.getCommentByPost)
+postRouter.delete("/:id", authMiddleware, PostController.deletePost);
