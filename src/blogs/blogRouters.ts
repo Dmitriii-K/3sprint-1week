@@ -1,11 +1,5 @@
 import { Router } from "express";
-import { getBlogsController } from "./getBlogsController";
-import { getPostForBlogController } from "./getPostForBlogController";
-import { createBlogController } from "./createBlogController";
-import { createPostForBlogController } from "./createPostForBlogController";
-import { findBlogController } from "./findBlogController";
-import { updateBlogController } from "./updateBlogController";
-import { deleteBlogController } from "./deleteBlogController";
+import { BlogController } from "./blogControllers";
 import {
   authMiddleware,
   blogInputValidation,
@@ -15,28 +9,28 @@ import {
 
 export const blogRouter = Router();
 
-blogRouter.get("/", getBlogsController);
-blogRouter.get("/:id/posts", getPostForBlogController);
+blogRouter.get("/", BlogController.getAllBlogs);
+blogRouter.get("/:id/posts", BlogController.getPostForBlog);
 blogRouter.post(
   "/",
   authMiddleware,
   blogInputValidation,
   inputCheckErrorsMiddleware,
-  createBlogController
+  BlogController.createBlog
 );
 blogRouter.post(
   "/:id/posts",
   authMiddleware,
   blogPostValidation,
   inputCheckErrorsMiddleware,
-  createPostForBlogController
+  BlogController.createPostForBlog
 );
-blogRouter.get("/:id", findBlogController);
+blogRouter.get("/:id", BlogController.getBlogById);
 blogRouter.put(
   "/:id",
   authMiddleware,
   blogInputValidation,
   inputCheckErrorsMiddleware,
-  updateBlogController
+  BlogController.updateBlog
 );
-blogRouter.delete("/:id", authMiddleware, deleteBlogController);
+blogRouter.delete("/:id", authMiddleware, BlogController.deleteBlog);
