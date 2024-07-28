@@ -12,6 +12,14 @@ export class UserQueryRepository {
         };
         return UserQueryRepository.mapUser(user);
     };
+    static async findUserByMiddleware (id: string) {
+        const mongoId = new ObjectId(id);
+        const user = await userCollection.findOne({_id: mongoId});
+        if (!user) {
+            return null;
+        };
+        return user
+    };
     static async findUsers(sortData: TypeUserPagination) {
         const queryParams = userPagination(sortData);
         const searchEmail = sortData.searchEmailTerm

@@ -18,4 +18,12 @@ export class SessionsRepository {
             return false
         }
     }
+    static async findSessionByMiddleware (deviceId: string) {
+        const user = await sessionsCollection.findOne({device_id: deviceId});
+        if(user) {
+            return user
+        } else {
+            return null
+        }
+    }
 }

@@ -7,6 +7,8 @@ import { SortDirection } from "../input-output-types/eny-type";
 import { jwtService } from "../adapters/jwtToken";
 import { UserDBModel } from "../input-output-types/users-type";
 import { AuthRepository } from "../auth/authRepository";
+import { UserQueryRepository } from "../users/userQueryRepository";
+import { SessionsRepository } from "../security-devices/sessionsRepository";
 
 const urlPattern =
   /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
@@ -300,7 +302,8 @@ if(!req.headers.authorization) {
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);
 
-  const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
+  // const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
+  const user = await UserQueryRepository.findUserByMiddleware(payload.userId)
   if(user) {
     req.user = user;
     next();
@@ -320,13 +323,15 @@ export const checkRefreshToken = async (req: Request, res: Response, next: NextF
   const payload = jwtService.getUserIdByToken(token);
   if(!payload) return res.sendStatus(401);
   
-  const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)}); 
+  const user : WithId<UserDBModel> | null= await userCollection.findOne({ _id : new ObjectId(payload.userId)});
+  // const user = await UserQueryRepository.findUserById(payload.userId)
   if(user) {
     req.user = user;
     req.deviceId = payload.deviceId;
     const dateIat = new Date(payload.iat * 1000).toISOString();
     //нужна проверка на соответствие iat действующего токена и сессии в базе данных ? отправляем req.cookies.refreshToken и req.deviceId
-    const session = await sessionsCollection.findOne({device_id: req.deviceId})
+    // const session = await sessionsCollection.findOne({device_id: req.deviceId})
+    const session = await SessionsRepository.findSessionByMiddleware(req.deviceId)
     if(session?.iat !== dateIat) {
       res.sendStatus(401)
       return
@@ -386,15 +391,15 @@ export const countDocumentApi = async (req: Request, res: Response, next: NextFu
   const ip = req.ip;
   const url = req.originalUrl;
 
-  const filterDocument = {
-    ip: ip,
-    URL: url,
-    date: { $gte: tenSecondsAgo }
-  }
-  await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
-  const requestCount = await apiCollection.countDocuments(filterDocument);
-  // const result = AuthRepository.dataRecording(ip, url, currentDate)
-  // const requestCount = AuthRepository.countingNumberRequests(filterDocument)
+  // const filterDocument = {
+  //   ip: ip,
+  //   URL: url,
+  //   date: { $gte: tenSecondsAgo }
+  // }
+  // await apiCollection.insertOne({ip: ip, URL: url, date: currentDate});
+  // const requestCount = await apiCollection.countDocuments(filterDocument);
+  const result = await AuthRepository.dataRecording(ip!, url, currentDate)
+  const requestCount = await AuthRepository.countingNumberRequests(ip!, url, tenSecondsAgo)
   if(requestCount > 5) {
     res.sendStatus(429)
   } else {
