@@ -11,7 +11,7 @@ export class CommentQueryRepository {
         };
         return CommentQueryRepository.mapComment(comment);
     };
-    static mapComment = (comment: WithId<CommentDBType>): CommentViewModel => {
+    static mapComment (comment: WithId<CommentDBType>): CommentViewModel {
         return {
             id: comment._id.toString(),
             content: comment.content,

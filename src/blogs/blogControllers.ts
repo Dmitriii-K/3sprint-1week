@@ -1,200 +1,133 @@
 import { Request, Response } from "express";
-import {BlogInputModel, BlogDbType, BlogViewModel, PaginatorBlogViewModel, TypePostForBlogHalper} from "../input-output-types/blogs-type";
+import {BlogInputModel, BlogViewModel, PaginatorBlogViewModel, TypePostForBlogHalper} from "../input-output-types/blogs-type";
 import { BlogPostInputModel, BlgId } from "../input-output-types/eny-type";
-import { PostDbType, PaginatorPostViewModel } from "../input-output-types/posts-type";
-import { OutputErrorsType } from "../input-output-types/output-errors-type";
-import { postCollection, blogCollection } from "../db/mongo-db";
-import { ObjectId } from "mongodb";
+import { PaginatorPostViewModel, PostViewModel } from "../input-output-types/posts-type";
 import { TypeBlogHalper } from "../input-output-types/blogs-type";
-import { WithId } from "mongodb";
-import { halper } from "../middlewares/middlewareForAll";
+import { BlogSessions } from "./blogSessions";
+import { BlogQueryRepository } from "./blogQueryRepository";
 
 export class BlogController {
     static createBlog = async (
-        req: Request<any, any, BlogInputModel>,
-        res: Response<any>
+        req: Request<{}, {}, BlogInputModel>,
+        res: Response<BlogViewModel>
     ) => {
         try {
-        const createDate = new Date().toISOString();
-        const newBlog: BlogDbType = {
-            name: req.body.name,
-            description: req.body.description,
-            websiteUrl: req.body.websiteUrl,
-            createdAt: createDate,
-            isMembership: false,
-        };
-        const newBlogBD = await blogCollection.insertOne(newBlog)!;
-        if (newBlogBD) {
-            const mapNewBlog = {
-            name: req.body.name,
-            description: req.body.description,
-            websiteUrl: req.body.websiteUrl,
-            createdAt: createDate,
-            isMembership: false,
-            id: newBlogBD.insertedId,
-            };
-            res.status(201).json(mapNewBlog);
-        } else {
-            res.sendStatus(500);
-        }
+            const createResult = await BlogSessions.createBlog(req.body)
+            if (!createResult) {
+                res.sendStatus(404)
+                return;
+                };
+            const newBlog = await BlogQueryRepository.getBlogById(createResult)
+            if(newBlog) {
+                res.status(201).json(newBlog);
+            } else {
+                res.sendStatus(500)
+            }
+                
         } catch (error) {
         console.log(error);
+        res.sendStatus(505);
         }
     };
     static createPostForBlog = async (
-        req: Request<any, any, BlogPostInputModel>,
-        res: Response<any>
+        req: Request<BlgId, {}, BlogPostInputModel>,
+        res: Response<PostViewModel>
     ) => {
         try {
-        const id = new ObjectId(req.params.id);
-        const nameBlogForPost = await blogCollection.findOne({ _id: id });
-        if (!nameBlogForPost) {
-            res.sendStatus(404);
-            return;
-        }
-        const createDate = new Date().toISOString();
-        const newPost: PostDbType = {
-            title: req.body.title,
-            shortDescription: req.body.shortDescription,
-            content: req.body.content,
-            blogId: req.params.id,
-            blogName: nameBlogForPost!.name,
-            createdAt: createDate,
-        };
-        const postForBlog = await postCollection.insertOne(newPost);
-        if (postForBlog) {
-            const mapPost = {
-            title: req.body.title,
-            shortDescription: req.body.shortDescription,
-            content: req.body.content,
-            blogId: req.params.id,
-            blogName: nameBlogForPost!.name,
-            createdAt: createDate,
-            id: postForBlog.insertedId,
-            };
-            res.status(201).json(mapPost);
-        } else {
-            res.sendStatus(500);
-        }
+            const findBlog = await BlogSessions.findBlogById(req.params.id)
+            if (!findBlog) {
+                res.sendStatus(404);
+                return;
+            }
+            const createResult = await BlogSessions.createPostForBlog(req.params.id, req.body, findBlog.name)
+            const newPostForBlog = await BlogQueryRepository.getPostForBlogById(createResult)
+            if(newPostForBlog) {
+                res.status(201).json(newPostForBlog)
+            } else {
+                res.sendStatus(500)
+            }
         } catch (error) {
         console.log(error);
+        res.sendStatus(505);
         }
     };
     static getAllBlogs = async (
-        req: Request<any, any, any, TypeBlogHalper>,
+        req: Request<{}, {}, {}, TypeBlogHalper>,
         res: Response<PaginatorBlogViewModel>
     ) => {
-        const queryParams = halper(req.query);
-        const search = req.query.searchNameTerm
-        ? { name: { $regex: req.query.searchNameTerm, $options: "i" } }
-        : {};
         try {
-        const items: WithId<BlogDbType>[] = await blogCollection
-            .find(search)
-            .sort(queryParams.sortBy, queryParams.sortDirection)
-            .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
-            .limit(queryParams.pageSize)
-            .toArray();
-        const totalCount = await blogCollection.countDocuments(search);
-        const newBlog = {
-            pagesCount: Math.ceil(totalCount / queryParams.pageSize),
-            page: queryParams.pageNumber,
-            pageSize: queryParams.pageSize,
-            totalCount,
-            items: items.map(blogsMap),
-        };
-        res.status(200).json(newBlog);
-        return;
-        } catch (e) {
-        console.log(e);
-        return { error: "some error" };
+            const blogs = await BlogQueryRepository.getAllBlogs(req.query)
+            res.status(200).json(blogs);
+            return;
+        } catch (error) {
+        console.log(error);
+        res.sendStatus(505);
         }
     };
     static getBlogById = async (req: Request, res: Response) => {
         try {
-        const id = new ObjectId(req.params.id);
-        const blog = await blogCollection.findOne({ _id: id });
-        if (blog) {
-            const findBlog = blogsMap(blog);
-            res.status(200).json(findBlog);
-        } else {
-            res.sendStatus(404);
-        }
+            const blogResult = await BlogQueryRepository.getBlogById(req.params.id)
+            if(blogResult) {
+                res.status(200).json(blogResult)
+            } else {
+                res.sendStatus(404)
+            }
         } catch (error) {
         console.log(error);
+        res.sendStatus(505);
         }
     };
     static getPostForBlog = async (
-        req: Request<BlgId, any, any, TypePostForBlogHalper>,
+        req: Request<BlgId, {}, {}, TypePostForBlogHalper>,
         res: Response<PaginatorPostViewModel>
     ) => {
         try {
-        const id = req.params.id;
-        const queryParams = halper(req.query);
-        const items: WithId<PostDbType>[] = await postCollection
-            .find({ blogId: id })
-            .sort(queryParams.sortBy, queryParams.sortDirection)
-            .skip((queryParams.pageNumber - 1) * queryParams.pageSize)
-            .limit(queryParams.pageSize)
-            .toArray();
-        if (items.length < 1) {
-            res.sendStatus(404);
-            return;
-        }
-        const totalCount = await postCollection.countDocuments({ blogId: id });
-        const newPost = {
-            pagesCount: Math.ceil(totalCount / queryParams.pageSize),
-            page: queryParams.pageNumber,
-            pageSize: queryParams.pageSize,
-            totalCount,
-            items: items.map(PostQueryRepository.mapPost),
-        };
-        res.status(200).json(newPost);
+            const posts = await BlogQueryRepository.getPostFofBlog(req.query, req.params.id)
+            if(!posts.items) {
+                res.sendStatus(404)
+                return
+            } else {
+                res.status(200).json(posts);
+                }
         } catch (error) {
         console.log(error);
+        res.sendStatus(505);
         }
     };
     static updateBlog = async (
-        req: Request<any, any, BlogInputModel>,
-        res: Response<BlogViewModel | OutputErrorsType>
+        req: Request<BlgId, {}, BlogInputModel>,
+        res: Response
     ) => {
         try {
-        const id = new ObjectId(req.params.id);
-        const findBlog = await blogCollection.findOne({ _id: id });
-        if (!findBlog) {
-            res.sendStatus(404);
-        } else {
-            const blog = await blogCollection.updateOne(
-            { _id: id },
-            {
-                $set: {
-                name: req.body.name,
-                description: req.body.description,
-                websiteUrl: req.body.websiteUrl,
-                },
+            const findBlog = await BlogSessions.findBlogById(req.params.id)
+            if(!findBlog) {
+                res.sendStatus(404)
+                return
             }
-            );
-            res.sendStatus(204);
-        }
+            const updateBlogResult = await BlogSessions.updateBlog(req.params.id, req.body)
+            if(updateBlogResult) {
+                res.sendStatus(204)
+            }
         return;
         } catch (error) {
         console.log(error);
+        res.sendStatus(505);
         }
     };
     static deleteBlog = async (
         req: Request,
-        res: Response<any>
+        res: Response
     ) => {
         try {
-        const id = new ObjectId(req.params.id);
-        const deleteBlog = await blogCollection.deleteOne({ _id: id });
-        if (deleteBlog.deletedCount === 1) {
-            res.sendStatus(204);
-        } else {
-            res.sendStatus(404);
-        }
+            const deleteResult = await BlogSessions.deleteBlog(req.params.id)
+            if(deleteResult) {
+                res.sendStatus(204)
+            } else {
+                res.sendStatus(404)
+            }
         } catch (error) {
         console.log(error);
+        res.sendStatus(505);
         }
     };
 }

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import {ComId} from "../input-output-types/eny-type";
 import { CommentInputModel, CommentViewModel } from "../input-output-types/comments-type";
-import { OutputErrorsType } from "../input-output-types/output-errors-type";
-import { CommetRepository } from "./commentRepository";
 import { CommentQueryRepository } from "./commentQueryRepositiry";
 import { CommentService } from "./commentService";
 
@@ -19,7 +17,7 @@ export class CommentsController {
             return res.sendStatus(505);
         }
     };
-    static updateComment = async (req:Request< ComId, {}, CommentInputModel>, res:Response<CommentViewModel | OutputErrorsType>) => {
+    static updateComment = async (req:Request< ComId, {}, CommentInputModel>, res:Response) => {
         try {
             const findUser = await CommentService.findUserByComment(req.params.id)
             if (!findUser) {
@@ -29,8 +27,8 @@ export class CommentsController {
                 res.sendStatus(403);
                 return; 
             }
-            const succsesUpdate = await CommentService.updateComment(req.params.id, req.body.content);
-            if(succsesUpdate === true) {
+            const updateResult = await CommentService.updateComment(req.params.id, req.body.content);
+            if(updateResult === true) {
                 res.sendStatus(204);
             }
             }

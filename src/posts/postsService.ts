@@ -1,6 +1,6 @@
 import { WithId } from "mongodb";
 import { CommentDBType, CommentInputModel } from "../input-output-types/comments-type";
-import { PostDbType, PostInputModel, PostViewModel } from "../input-output-types/posts-type";
+import { PostDbType, PostInputModel } from "../input-output-types/posts-type";
 import { UserDBModel } from "../input-output-types/users-type";
 import { PostRepository } from "./postsRepository";
 
@@ -17,16 +17,6 @@ export class PostService {
             createdAt: createDate,
         };
         return PostRepository.insertPost(newPost);
-        // if (newPostDB) {
-        //     const mapPostDB: PostViewModel = {
-        //     title: data.title,
-        //     shortDescription: data.shortDescription,
-        //     content: data.content,
-        //     blogId: data.blogId,
-        //     blogName: findBlogNameForId!.name,
-        //     createdAt: createDate,
-        //     id: newPostDB.insertedId.toString(),
-        //     }
         }
     static async createCommentByPost (paramId: string, data: CommentInputModel, user: WithId<UserDBModel>) {
         const post = await PostRepository.findPostById(paramId);

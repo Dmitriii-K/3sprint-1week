@@ -57,7 +57,7 @@ export class PostQueryRepository {
             };
             return comments
     };
-    static mapPost = (post: WithId<PostDbType>): PostViewModel => {
+    static mapPost (post: WithId<PostDbType>): PostViewModel {
         return {
         id: post._id.toString(),
         title: post.title,
@@ -68,7 +68,7 @@ export class PostQueryRepository {
         createdAt: post.createdAt,
         };
     };
-    static mapComment = (comment: WithId<CommentDBType>): CommentViewModel => {
+    static mapComment (comment: WithId<CommentDBType>): CommentViewModel {
         return {
             id: comment._id.toString(),
             content: comment.content,

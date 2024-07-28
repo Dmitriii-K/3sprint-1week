@@ -11,7 +11,7 @@ import {
 
 export class UserController {
     static createUser = async (
-        req: Request<any, any, UserInputModel>,
+        req: Request<{}, {}, UserInputModel>,
         res: Response<UserViewModel | OutputErrorsType>,
     ) => {
         try {
@@ -35,6 +35,7 @@ export class UserController {
             res.sendStatus(204);
         } else {
             res.sendStatus(404);
+            return
         }
         } catch (error) {
         console.log(error);

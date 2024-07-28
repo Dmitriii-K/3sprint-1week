@@ -18,6 +18,7 @@ export class AuthController {
       const authUser = await authService.checkCredentials(req.body.loginOrEmail);
       if (!authUser) {
         res.status(401).json({ errorsMessages: [{field: 'user', message: 'user not found'}] });
+        return
       } else {
         const isCorrect = await bcryptService.comparePasswords(req.body.password, authUser?.password);
         if(isCorrect) {
@@ -28,6 +29,7 @@ export class AuthController {
           return;
         } else {
           res.status(401).json({ errorsMessages: [{field: 'password and login', message: 'password or login is wrong'}] });
+          return
         }
     };
     } catch (error) {
@@ -61,6 +63,7 @@ export class AuthController {
         res.sendStatus(204);
       } else {
         res.sendStatus(400);
+        return
       }
     } catch (error) {
       console.log(error);
@@ -75,6 +78,7 @@ export class AuthController {
         res.sendStatus(204);
       } else {
         res.status(400).send({errorsMessages: [{field: "code", message: " Code validation failure "}]})
+        return
       }
     } catch (error) {
       console.log(error);

@@ -1,6 +1,5 @@
 import { CommetRepository } from "./commentRepository";
 
-
 export class CommentService {
     static async findUserByComment (id: string) {
         const user = await CommetRepository.findUserByComment(id)
@@ -11,16 +10,16 @@ export class CommentService {
         }
     }
     static async updateComment (id: string, content: string) {
-        const succsesUpdate = await CommetRepository.updateComment(id, content);
-        if(succsesUpdate === true) {
-            return succsesUpdate
+        const updateResult = await CommetRepository.updateComment(id, content);
+        if(updateResult) {
+            return updateResult
         } else {
             return false
         }
-        }
+    }
     static async deleteComment (id: string) {
-        const deleteComment = await CommetRepository.deleteComment(id);
-        if (deleteComment) {
+        const deleteResult = await CommetRepository.deleteComment(id);
+        if (deleteResult) {
             return true;
         } else {
             return null;

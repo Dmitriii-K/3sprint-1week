@@ -28,10 +28,6 @@ export class PostRepository {
     static async deletePost (id: string) {
         const mongoId = new ObjectId(id);
         const result = await postCollection.deleteOne({_id: mongoId})
-        if(result.deletedCount >= 1) {
-            return true
-        } else {
-            return false
-        }
+        return result.deletedCount === 1
     }
 }

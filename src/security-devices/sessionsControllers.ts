@@ -10,7 +10,7 @@ export class SessionsControllers {
             const device_id = req.deviceId;
 
             const result = await SessionsService.deleteAllSessionsExceptCurrentOne(userId, device_id);
-            if(result!) {
+            if(result) {
                 res.sendStatus(204)
                 return
             }
@@ -33,9 +33,8 @@ export class SessionsControllers {
                 }}
 
             const deleteDevice = await SessionsService.deleteSessionById(req.params.id);
-            if(deleteDevice!) {
+            if(deleteDevice) {
                 res.sendStatus(204)
-                return
             } else {
                 res.sendStatus(404)
                 return
