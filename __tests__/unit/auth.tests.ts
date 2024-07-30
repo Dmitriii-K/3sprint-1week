@@ -45,6 +45,7 @@ describe('UNIT', () => {
     describe('registerUser', () => {
         const registrationUser = authService.registerUser;
         // bcryptService.createHashPassword = jest.fn().mockImplementation((pass: string) => {hashPpass: "password"});
+
         AuthRepository.createUser = jest.fn().mockImplementation((newUser:string) => undefined);
         sendMailService.sendMail = jest.fn().mockImplementation((email: string, confirmationCode: string) => true);
 
@@ -64,9 +65,9 @@ describe('UNIT', () => {
             }
             const user = await registrationUser(newUser);
             expect(user).toBeDefined();
-            expect(user.login).toEqual(newUser.login);
-            expect(user.email).toBe(newUser.email);
-            expect(user.emailConfirmation.isConfirmed).toBeFalsy();
+            expect(user!.login).toEqual(newUser.login);
+            expect(user!.email).toBe(newUser.email);
+            expect(user!.emailConfirmation.isConfirmed).toBeFalsy();
             expect(sendMailService.sendMail).toBeCalled();
         });
     });
